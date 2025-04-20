@@ -3,10 +3,11 @@ version: '3.8'
 services:
   browser-use-webui:
     container_name: browser-use-webui
-    image: your-image-name:latest  # Or use a working base image like "browsergpt/browsergpt"
-    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "7788:7788"  # Web UI (e.g., Gradio)
+      - "7788:7788"  # Web UI (Gradio or similar)
       - "6080:6080"  # noVNC WebSocket UI
       - "5901:5901"  # VNC server port
       - "9222:9222"  # Chrome Remote Debugging
@@ -29,7 +30,7 @@ services:
       - /tmp
     command: >
       bash -c "
-      Xvfb :1 -screen 0 1920x1080x24 & 
+      Xvfb :1 -screen 0 1920x1080x24 &
       sleep 2 &&
       x11vnc -display :1 -forever -nopw -shared -rfbport 5901 &
       websockify --web=/usr/share/novnc/ 6080 localhost:5901 &
